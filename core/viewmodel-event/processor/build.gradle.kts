@@ -1,6 +1,5 @@
 plugins {
-    id("kotlin")
-    id("org.jetbrains.kotlin.jvm")
+    alias(libs.plugins.lizanote.kotlin)
 }
 
 dependencies {
