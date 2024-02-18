@@ -26,5 +26,7 @@ include(
     ":app",
     ":core:viewmodel-event:annotations",
     ":core:viewmodel-event:processor",
+    ":core:viewmodel",
+    ":core:navigation"
 )
  
