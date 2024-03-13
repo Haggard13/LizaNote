@@ -4,14 +4,17 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import ru.eh13.lizanote.ui.theme.LizaNoteTheme
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.SideEffect
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.*
+import ru.eh13.lizanote.di.MainActivityComponent
+import ru.eh13.lizanote.di.MainActivityComponentImpl
+import ru.eh13.lizanote.feature.note.flow.noteFlow
+import ru.eh13.lizanote.feature.notes.flow.notesFlow
+import ru.eh13.lizanote.flow.Flows
+import ru.eh13.lizanote.navigation.RouterImpl
+import ru.eh13.lizanote.uikit.LizaNoteTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -19,29 +22,19 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             LizaNoteTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                val navController = rememberNavController()
+                DisposableEffect(Unit) {
+                    RouterImpl.setNavController(navController)
+                    onDispose {
+                        RouterImpl.setNavController(null)
+                    }
+                }
+                viewModel { MainActivityComponentImpl() }
+                NavHost(navController = navController, startDestination = Flows.Notes.name) {
+                    notesFlow()
+                    noteFlow()
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    LizaNoteTheme {
-        Greeting("Android")
     }
 }

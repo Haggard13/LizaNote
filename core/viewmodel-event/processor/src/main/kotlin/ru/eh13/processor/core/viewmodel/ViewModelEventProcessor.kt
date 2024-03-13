@@ -10,28 +10,18 @@ class ViewModelEventProcessor(private val viewModelEventGenerator: ViewModelEven
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val annotatedSymbols = resolver.getSymbolsWithViewModelAnnotation()
-            .groupBy { it.validate() }
-        val validSymbols = annotatedSymbols[true].orEmpty()
-        val symbolsForReprocessing = annotatedSymbols[false].orEmpty()
 
-        validSymbols.asSequence()
+        annotatedSymbols.asSequence()
             .filterIsInstance<KSClassDeclaration>()
-            .getOnlyClasses()
-            .processClasses()
+            .filter { it.classKind == ClassKind.CLASS && it.isCompanionObject.not() }
+            .forEach { it.processClass() }
 
-        return symbolsForReprocessing
+        return emptyList()
     }
 
     private fun Resolver.getSymbolsWithViewModelAnnotation(): Sequence<KSAnnotated> {
         val annotationName = ViewModel::class.qualifiedName ?: return emptySequence()
         return getSymbolsWithAnnotation(annotationName)
-    }
-
-    private fun Sequence<KSClassDeclaration>.getOnlyClasses() =
-        filter { it.classKind == ClassKind.CLASS && it.isCompanionObject.not() }
-
-    private fun Sequence<KSClassDeclaration>.processClasses() {
-        forEach { it.processClass() }
     }
 
     private fun KSClassDeclaration.processClass() {
