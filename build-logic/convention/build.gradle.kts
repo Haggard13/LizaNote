@@ -49,5 +49,9 @@ gradlePlugin {
             id = "ru.eh13.lizanote.kotlin.module"
             implementationClass = "LizaNoteKotlinModulePlugin"
         }
+        register("lizaNoteComposeModule") {
+            id = "ru.eh13.lizanote.compose.module"
+            implementationClass = "LizaNoteComposeModulePlugin"
+        }
     }
 }

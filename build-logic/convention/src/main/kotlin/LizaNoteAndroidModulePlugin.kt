@@ -20,8 +20,8 @@ class LizaNoteAndroidModulePlugin : Plugin<Project> {
                     minSdk = 26
                 }
                 compileOptions {
-                    sourceCompatibility = JavaVersion.VERSION_11
-                    targetCompatibility = JavaVersion.VERSION_11
+                    sourceCompatibility = JavaVersion.VERSION_17
+                    targetCompatibility = JavaVersion.VERSION_17
                     isCoreLibraryDesugaringEnabled = true
                 }
 
@@ -30,7 +30,7 @@ class LizaNoteAndroidModulePlugin : Plugin<Project> {
 
                 tasks.withType<KotlinCompile>().configureEach {
                     kotlinOptions {
-                        jvmTarget = JavaVersion.VERSION_11.toString()
+                        jvmTarget = JavaVersion.VERSION_17.toString()
                         val warningsAsErrors: String? by project
                         allWarningsAsErrors = warningsAsErrors.toBoolean()
                         freeCompilerArgs = freeCompilerArgs + listOf(
@@ -43,6 +43,8 @@ class LizaNoteAndroidModulePlugin : Plugin<Project> {
             }
             dependencies {
                 add("coreLibraryDesugaring", libs.findLibrary("android.desugarJdkLibs").get())
+                add("implementation", "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm:1.8.0")
+                add("testImplementation", "org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
             }
         }
     }

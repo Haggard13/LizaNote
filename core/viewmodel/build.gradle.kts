@@ -8,5 +8,5 @@ android {
 
 dependencies {
     implementation(libs.androidx.viewmodel)
-    implementation(projects.core.navigation)
+    implementation(projects.core.navigation.api)
 }
