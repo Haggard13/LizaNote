@@ -56,7 +56,6 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.navigation)
     implementation(libs.androidx.room)
-    implementation(project(":feature:note:data"))
     ksp(libs.androidx.room.compiler)
     implementation(libs.gson)
 

@@ -15,8 +15,8 @@ dependencies {
     implementation(projects.feature.notes.ui.impl)
     implementation(projects.feature.notes.ui.api)
 
-    implementation(projects.feature.note.data)
+    api(projects.feature.note.ui)
     implementation(projects.feature.note.domain.api)
     implementation(projects.feature.note.domain.impl)
-    api(projects.feature.note.ui)
+    api(projects.feature.note.data)
 }
