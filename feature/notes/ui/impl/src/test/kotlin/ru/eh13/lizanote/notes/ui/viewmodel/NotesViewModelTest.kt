@@ -5,6 +5,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import ru.eh13.lizanote.feature.note.domain.NotesUseCase
@@ -32,7 +33,7 @@ class NotesViewModelTest {
         Note(id = 3, name = "name2", text = "text2"),
     )
     private val mapper = NoteToPreviewNoteUiModelMapper(NoteToAnnotatedStringMapperImpl())
-    private val useCase = mockk<NotesUseCase>() { coEvery { getNotes() } returns notes }
+    private val useCase = mockk<NotesUseCase>() { coEvery { observeNotes() } returns flowOf(notes) }
 
     @Test
     fun `when note clicked then navigate to Note flow`() {
@@ -49,7 +50,7 @@ class NotesViewModelTest {
 
         viewModel.onAddNoteClicked()
 
-        verify { router.navigateToFlow(eq(Flows.Note)) }
+        verify { router.navigateToFlow(eq(Flows.Note), isNull()) }
     }
 
     @Test

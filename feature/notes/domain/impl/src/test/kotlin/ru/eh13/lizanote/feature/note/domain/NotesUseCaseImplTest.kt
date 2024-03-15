@@ -2,6 +2,8 @@ package ru.eh13.lizanote.feature.note.domain
 
 import io.mockk.coEvery
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import ru.eh13.lizanote.feature.note.domain.entity.Note
@@ -13,11 +15,11 @@ class NotesUseCaseImplTest {
     @Test
     fun `when data source return empty list then usecase return empty list`() = runTest {
         val dataSource = mockk<NotesRepository>()
-        coEvery { dataSource.getNotes() } returns emptyList()
+        coEvery { dataSource.observeNotes() } returns flowOf(emptyList())
 
         val noteUseCaseImpl: NotesUseCase = NotesUseCaseImpl(dataSource)
 
-        assertEquals(emptyList(), noteUseCaseImpl.getNotes())
+        assertEquals(emptyList(), noteUseCaseImpl.observeNotes().last())
     }
 
     @Test
@@ -29,10 +31,10 @@ class NotesUseCaseImplTest {
             Note(id = 4),
         )
         val dataSource = mockk<NotesRepository>()
-        coEvery { dataSource.getNotes() } returns notes
+        coEvery { dataSource.observeNotes() } returns flowOf(notes)
 
         val noteUseCaseImpl: NotesUseCase = NotesUseCaseImpl(dataSource)
 
-        assertEquals(notes.toSet(), noteUseCaseImpl.getNotes().toSet())
+        assertEquals(notes.toSet(), noteUseCaseImpl.observeNotes().last().toSet())
     }
 }
