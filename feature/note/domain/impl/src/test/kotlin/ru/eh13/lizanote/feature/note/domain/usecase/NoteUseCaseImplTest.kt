@@ -6,18 +6,25 @@ import io.mockk.slot
 import kotlinx.coroutines.test.runTest
 import ru.eh13.lizanote.feature.note.domain.NoteRepository
 import ru.eh13.lizanote.feature.note.domain.NoteUseCase
+import ru.eh13.lizanote.feature.note.domain.addSpan
+import ru.eh13.lizanote.feature.note.domain.deleteSpan
 import ru.eh13.lizanote.feature.note.domain.entity.Note
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class NoteUseCaseImplTest {
-    private val span = Note.Span(start = 1, end = 3, style = Note.Style.Underline)
+    private val spans =
+        mapOf(
+            1 to setOf(Note.Style.Underline),
+            2 to setOf(Note.Style.Underline),
+            3 to setOf(Note.Style.Underline),
+        )
     private var note = Note(
         id = 1,
         name = "Note",
         text = "Hello, world!",
-        spans = setOf(span)
+        spans = spans
     )
     private val repository: NoteRepository = mockk() {
         val noteSlot = slot<Note>()
@@ -71,9 +78,7 @@ class NoteUseCaseImplTest {
         val noteUseCase: NoteUseCase = NoteUseCaseImpl(repository)
 
         noteUseCase.dispatchNote(1)
-        noteUseCase.deleteSpan(
-            Note.Span(start = 1, end = 3, style = Note.Style.Underline)
-        )
+        noteUseCase.deleteSpan<Note.Style.Underline>(start = 1, end = 3)
         noteUseCase.save()
 
         assertEquals(repository.getNote(1), noteUseCase.dispatchNote(1))
@@ -84,7 +89,7 @@ class NoteUseCaseImplTest {
         val noteUseCase: NoteUseCase = NoteUseCaseImpl(repository)
 
         noteUseCase.dispatchNote(1)
-        noteUseCase.addSpan(Note.Span(start = 5, end = 7, style = Note.Style.Strikethrough))
+        noteUseCase.addSpan(start = 5, end = 7, style = Note.Style.Strikethrough)
         noteUseCase.save()
 
         assertEquals(
